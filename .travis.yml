@@ -9,7 +9,7 @@ before_install:
   # use the files in client as the context argument (so that dockerfile know this is what we're copying with . . args)
   - docker build -t thexyman/react-test -f ./client/Dockerfile.dev ./client
   # If we had other test to run
-  - docker build myOtherProject
+  # - docker build myOtherProject
   
 # run the test(s)
 script:
