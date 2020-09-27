@@ -32,6 +32,7 @@ after_success:
 
 # Deploy to EBS
 deploy: 
+  edge: true
   provider: elasticbeanstalk 
   region: "eu-east-1"
   app: "fibonacci-multi-docker"
