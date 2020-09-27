@@ -29,3 +29,16 @@ after_success:
   - docker push thexyman/multi-nginx
   - docker push thexyman/multi-server
   - docker push thexyman/multi-worker 
+
+# Deploy to EBS
+deploy: 
+  provider: elasticbeanstalk 
+  region: "eu-east-1"
+  app: "fibonacci-multi-docker"
+  env: "FibonacciMultiDocker-env-1"
+  bucket_name: "elasticbeanstalk-us-east-1-210226449536"
+  bucket_path: "docker-multi"
+  on:
+    branch: master # deploy only when main gets a change of code
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
