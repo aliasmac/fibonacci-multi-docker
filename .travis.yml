@@ -34,7 +34,7 @@ after_success:
 deploy: 
   edge: true
   provider: elasticbeanstalk 
-  region: "eu-east-1"
+  region: "us-east-1"
   app: "fibonacci-multi-docker"
   env: "FibonacciMultiDocker-env-1"
   bucket_name: "elasticbeanstalk-us-east-1-210226449536"
