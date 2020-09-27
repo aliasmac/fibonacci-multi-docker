@@ -1,0 +1,53 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+
+  redis:
+    image: 'redis:latest'
+
+  api:
+    build:
+      dockerfile: Dockerfile.dev 
+      context: ./server # specifies folder to look for docker dev file
+    volumes:
+      - /app/node_modules # don't try use project source node-mod
+      - ./server:/app
+    environment: 
+      - REDIS_HOST=redis # ref name ^^, no url for host 
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432 
+
+  client:
+    build:
+      dockerfile: Dockerfile.dev 
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    stdin_open: true
+
+  worker: # no restart poilicy needed, we're ahppy if this crashes because it does expensive process
+    build:
+      dockerfile: Dockerfile.dev 
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+
+  nginx: 
+    restart: always # need to make sure nginx is always runnung
+    build:
+      dockerfile: Dockerfile.dev 
+      context: ./nginx
+    ports: 
+      - '3050:80'
+
+
+  
