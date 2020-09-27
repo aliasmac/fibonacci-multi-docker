@@ -1,0 +1,31 @@
+sudo: required 
+services:
+  - docker 
+
+# Setup test(s)
+before_install: 
+  # build a docker file for test stage of deployment and tag it thexyman/react-test
+  # use the docker file located in client folder 
+  # use the files in client as the context argument (so that dockerfile know this is what we're copying with . . args)
+  - docker build -t thexyman/react-test -f ./client/Dockerfile.dev ./client
+  # If we had other test to run
+  - docker build myOtherProject
+  
+# run the test(s)
+script:
+  - docker run -e CI=true thexyman/react-test npm test
+  # - docker run myOtherProject <overide command> like npm test  
+
+# If test(s) pass we need to do a build for each service(s)
+after_success:
+  - docker build -t thexyman/multi-client ./client 
+  - docker build -t thexyman/multi-nginx ./nginx
+  - docker build -t thexyman/multi-server ./server
+  - docker build -t thexyman/multi-worker ./worker
+  # Log into the docker CLI 
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker 
+  - docker push thexyman/multi-client
+  - docker push thexyman/multi-nginx
+  - docker push thexyman/multi-server
+  - docker push thexyman/multi-worker 
